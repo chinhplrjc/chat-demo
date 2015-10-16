@@ -1,20 +1,19 @@
 module ClientServer
 
-  ERR_INVALID_USER_ID = 100
-
-
   # TODO: validate data for all actions
 
 =begin
   REQ
   {
+    'tag': 123,
     'action': 'login',
     'user_id': 'user_id_1'
   }
   RES
   {
-    err: 0,
-    rooms: [
+    'tag': 123,
+    'err': 0,
+    'rooms': [
       {
         'id': 'room_id_1',
         'name': 'Room 1'
@@ -37,6 +36,7 @@ module ClientServer
         subscriptions << [chan, sid]
       end
       ws.send({
+        tag: json['tag'],
         err: 0,
         rooms: user.rooms.map do |r|
           {
@@ -47,19 +47,24 @@ module ClientServer
         end
       }.to_json)
     else
-      ws.send({err: ERR_INVALID_USER_ID}.to_json)
+      ws.send({
+        tag: json['tag'],
+        err: ERR_INVALID_USER_ID
+      }.to_json)
     end
   end
 
 =begin
   REQ
   {
+    'tag': 123,
     'action': 'create_room',
     'users': ['user_id_1', 'user_id_2', 'user_id_3'],
     'name': "Room 1"
   }
   RES
   {
+    'tag': 123,
     'err': 0,
     'id': 'room_id_100'
   }
@@ -84,6 +89,7 @@ module ClientServer
 
     # response
     ws.send({
+      tag: json['tag'],
       err: 0,
       id: room.id.to_s
     }.to_json)
@@ -92,11 +98,13 @@ module ClientServer
 =begin
   REQ
   {
+    'tag': 123,
     'action': 'get_room',
     'room_id': 'room_id_1'
   }
   RES
   {
+    'tag': 123,
     'err': 0,
     'id': 'room_id_1',
     'name': 'Room 1'
@@ -107,25 +115,31 @@ module ClientServer
     room = Room.where(id: json['room_id']).first
     if room
       ws.send({
+        tag: json['tag'],
         err: 0,
         id: room.id.to_s,
         name: room.name,
         users: room.users.map { |u| u.id.to_s }
       }.to_json)
     else
-      ws.send({err: ERR_INVALID_ROOM_ID}.to_json)
+      ws.send({
+        tag: json['tag'],
+        err: ERR_INVALID_ROOM_ID
+      }.to_json)
     end
   end
 
 =begin
   REQ
   {
+    'tag': 123,
     'action': 'create_message',
     'room_id': 'room_id_1',
     'body': "Hello there!!!"
   }
   RES
   {
+    'tag': 123,
     'err': 0,
     'id': 'message_id_1'
   }
@@ -149,6 +163,7 @@ module ClientServer
 
     # response
     ws.send({
+      tag: json['tag'],
       err: 0,
       id: message.id.to_s
     }.to_json)
@@ -157,11 +172,13 @@ module ClientServer
 =begin
   REQ
   {
+    'tag': 123,
     'action': 'get_room_messages',
     'room_id': 'room_id_1'
   }
   RES
   {
+    'tag': 123,
     'err': 0,
     'messages': [
       {
@@ -170,13 +187,15 @@ module ClientServer
         'time': 1444986700,
         'room_id': 'room_id_1',
         'user_id': 'user_id_1'
-      }
+      },
+      ...
     ]
   }
 =end
   def get_room_messages(ws, channels, user_id, subscriptions, json)
     messages = Message.where(room_id: json['room_id']).to_a
     ws.send({
+      tag: json['tag'],
       err: 0,
       messages: messages.map do |m|
         {
