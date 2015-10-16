@@ -3,6 +3,7 @@ require 'em-websocket'
 require 'mongoid'
 require 'json'
 require 'require_all'
+require 'byebug'
 
 # errors
 require_all 'config/initializers/errors.rb'
@@ -48,7 +49,10 @@ EventMachine.run do
           json = JSON.parse(msg)
           eval "#{json['action']}(ws, channels, user_id, subscriptions, json)"
         rescue => e
-          puts e
+          puts "=" * 20
+          puts e.message
+          puts e.backtrace
+          puts "=" * 20
           ws.send({ err: ERR_BAD_REQUEST }.to_json)
         end
         

@@ -30,6 +30,7 @@ GEM
     arel (5.0.1.20140414130214)
     bson (3.2.6)
     builder (3.2.2)
+    byebug (6.0.2)
     coderay (1.1.0)
     daemons (1.1.9)
     em-websocket (0.5.1)
@@ -114,6 +115,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  byebug
   em-websocket (= 0.5.1)
   eventmachine (= 1.0.4)
   execjs (= 2.6.0)

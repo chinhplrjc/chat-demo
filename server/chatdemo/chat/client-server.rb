@@ -121,7 +121,7 @@ module ClientServer
   REQ
   {
     'action': 'create_message',
-    'room_id': 'room_id_1'
+    'room_id': 'room_id_1',
     'body': "Hello there!!!"
   }
   RES
@@ -143,9 +143,50 @@ module ClientServer
     # push to other users
     chan = channels[json['room_id']]
     chan.push({
-      event: 'on_msg',
+      event: 'on_message',
       message: message
     })
 
+    # response
+    ws.send({
+      err: 0,
+      id: message.id.to_s
+    }.to_json)
+  end
+
+=begin
+  REQ
+  {
+    'action': 'get_room_messages',
+    'room_id': 'room_id_1'
+  }
+  RES
+  {
+    'err': 0,
+    'messages': [
+      {
+        'id': 'message_id_1',
+        'body': 'Hello There!!!',
+        'time': 1444986700,
+        'room_id': 'room_id_1',
+        'user_id': 'user_id_1'
+      }
+    ]
+  }
+=end
+  def get_room_messages(ws, channels, user_id, subscriptions, json)
+    messages = Message.where(room_id: json['room_id']).to_a
+    ws.send({
+      err: 0,
+      messages: messages.map do |m|
+        {
+          id: m.id.to_s,
+          body: m.body,
+          time: m.time,
+          room_id: m.room_id.to_s,
+          user_id: m.user_id.to_s
+        }
+      end
+    }.to_json)
   end
 end

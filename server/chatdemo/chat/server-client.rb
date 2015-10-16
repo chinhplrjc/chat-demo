@@ -3,7 +3,6 @@ module ServerClient
 =begin
   EVENT
   {
-    to: ['current_user_id', ...],
     event: 'on_join',
     room: room
   }
@@ -30,10 +29,33 @@ module ServerClient
     }.to_json)
   end
 
-  def on_leave
+  def on_leave(ws, channels, user_id, subscriptions, data)
   end
 
-  def on_msg
-
+=begin
+  EVENT
+  {
+    event: 'on_message',
+    message: message
+  }
+  PUSH
+  {
+    'event': 'on_message',
+    'id': 'message_id_1',
+    'body': 'Hello There!!!',
+    'time': 1444986700,
+    'room_id': 'room_id_1',
+    'user_id': 'user_id_1'
+  }
+=end
+  def on_message(ws, channels, user_id, subscriptions, data)
+    ws.send({
+      event: 'on_message',
+      id: data[:message].id.to_s,
+      body: data[:message].body,
+      time: data[:message].time,
+      room_id: data[:message].room_id.to_s,
+      user_id: data[:message].user_id.to_s
+    }.to_json)
   end
 end
