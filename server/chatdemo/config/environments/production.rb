@@ -69,7 +69,7 @@ Rails.application.configure do
   config.i18n.fallbacks = true
 
   # Send deprecation notices to registered listeners.
-  config.active_support.deprecation = :notify
+  # config.active_support.deprecation = :notify
 
   # Disable automatic flushing of the log to improve performance.
   # config.autoflush_log = false
@@ -78,5 +78,5 @@ Rails.application.configure do
   config.log_formatter = ::Logger::Formatter.new
 
   # Do not dump schema after migrations.
-  config.active_record.dump_schema_after_migration = false
+  # config.active_record.dump_schema_after_migration = false
 end
