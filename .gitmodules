@@ -1,0 +1,3 @@
+[submodule "android/ChatDemo/mobilib"]
+	path = android/ChatDemo/mobilib
+	url = https://github.com/datdojp/mobilib.git
