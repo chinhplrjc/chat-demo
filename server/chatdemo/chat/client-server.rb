@@ -1,6 +1,7 @@
 module ClientServer
 
   # TODO: validate data for all actions
+  # TODO: authenticate all actions (check if use has logged in or not)
 
 =begin
   REQ
