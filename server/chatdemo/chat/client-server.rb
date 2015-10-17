@@ -174,7 +174,8 @@ module ClientServer
   {
     'tag': 123,
     'action': 'get_room_messages',
-    'room_id': 'room_id_1'
+    'room_id': 'room_id_1',
+    'limit': 20
   }
   RES
   {
@@ -193,7 +194,11 @@ module ClientServer
   }
 =end
   def get_room_messages(ws, channels, user_id, subscriptions, json)
-    messages = Message.where(room_id: json['room_id']).to_a
+    crit = Message.where(room_id: json['room_id'])
+    if json['limit'] && json['limit'] > 0
+      crit = crit.limit(json['limit'])
+    end
+    messages = crit.to_a
     ws.send({
       tag: json['tag'],
       err: 0,
