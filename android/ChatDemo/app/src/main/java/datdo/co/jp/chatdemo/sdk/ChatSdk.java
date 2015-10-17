@@ -203,7 +203,7 @@ public class ChatSdk {
     public void register(String userId, final SimpleCallback callback) {
         MblApi.run(new MblRequest()
                 .setMethod(Method.POST)
-                .setUrl(mHttpServer + "/users")
+                .setUrl(mHttpServer + "/api/register")
                 .setParams("user_id", userId)
                 .setCallbackHandler(mHandler)
                 .setCallback(getApiCallback(callback)));
