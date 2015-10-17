@@ -43,7 +43,7 @@ module ClientServer
           {
             id: r.id.to_s,
             name: r.name,
-            users: r.users.map { |u| u.id.to_s }
+            users: r.users.map { |u| u.user_id }
           }
         end
       }.to_json)
@@ -120,7 +120,7 @@ module ClientServer
         err: 0,
         id: room.id.to_s,
         name: room.name,
-        users: room.users.map { |u| u.id.to_s }
+        users: room.users.map { |u| u.user_id }
       }.to_json)
     else
       ws.send({
