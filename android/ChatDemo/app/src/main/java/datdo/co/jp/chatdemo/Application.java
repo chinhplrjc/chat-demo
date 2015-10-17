@@ -2,6 +2,7 @@ package datdo.co.jp.chatdemo;
 
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.StateListDrawable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ public class Application extends MblBaseApplication {
         MblViewUtil.setGlobalViewProcessor(new MblViewUtil.MblInterateViewDelegate() {
 
             StateListDrawable stateListDrawable = new StateListDrawable();
+            ColorDrawable dividerColor = new ColorDrawable(0x88adadad);
 
             @Override
             public void process(View view) {
@@ -36,9 +38,11 @@ public class Application extends MblBaseApplication {
                     TextView tv = (TextView) view;
 
                     // remove dummy text
-                    String text = tv.getText().toString();
-                    if (text.matches("\\{.+\\}")) {
-                        tv.setText(null);
+                    if (!isIgnored(view)) {
+                        String text = tv.getText().toString();
+                        if (text.matches("\\{.+\\}")) {
+                            tv.setText(null);
+                        }
                     }
                 }
 
@@ -48,9 +52,17 @@ public class Application extends MblBaseApplication {
                     if (lv.getSelector() != stateListDrawable) {
                         lv.setSelector(stateListDrawable);
                     }
-                    lv.setDivider(new ColorDrawable(0x88adadad));
-                    lv.setDividerHeight(1);
+                    if (!isIgnored(view)) {
+                        lv.setDivider(dividerColor);
+                        lv.setDividerHeight(1);
+                    }
                 }
+            }
+
+            boolean isIgnored(View view) {
+                return view.getTag() != null
+                        && view.getTag() instanceof String
+                        && TextUtils.equals((String)view.getTag(), "~");
             }
         });
     }

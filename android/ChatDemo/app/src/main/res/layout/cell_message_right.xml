@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="right"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:singleLine="true"
+        android:text="{Oct 10}"
+        android:textColor="#000"
+        android:textSize="12sp"/>
+
+    <TextView
+        android:id="@+id/body_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical"
+        android:maxWidth="200dp"
+        android:text="{msg_body_text}"
+        android:textColor="#000"
+        android:textSize="14sp"
+        android:background="@drawable/bg_bubble_me"
+        android:paddingBottom="5dp"
+        android:paddingLeft="7dp"
+        android:paddingRight="15dp"
+        android:paddingTop="5dp"/>
+</LinearLayout>

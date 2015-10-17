@@ -11,6 +11,8 @@
     <string name="room_name_here">Room name here...</string>
     <string name="create_room">Create Room</string>
     <string name="xxx_members">%1$d members</string>
+    <string name="type_your_message">Type your message...</string>
+    <string name="send">Send</string>
 
     <string name="error">Error</string>
     <string name="err_invalid_user_id">Invalid User ID</string>

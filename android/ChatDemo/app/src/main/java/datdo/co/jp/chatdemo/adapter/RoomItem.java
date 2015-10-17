@@ -1,7 +1,6 @@
 package datdo.co.jp.chatdemo.adapter;
 
 import android.content.Context;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -9,21 +8,17 @@ import android.widget.TextView;
 import com.datdo.mobilib.adapter.MblUniversalItem;
 import com.datdo.mobilib.util.MblUtils;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import datdo.co.jp.chatdemo.R;
+import datdo.co.jp.chatdemo.TalkActivity;
 import datdo.co.jp.chatdemo.sdk.Message;
 import datdo.co.jp.chatdemo.sdk.Room;
 import datdo.co.jp.chatdemo.util.ChatUtil;
+import datdo.co.jp.chatdemo.util.Util;
 
 /**
  * Created by dat on 2015/10/17.
  */
 class RoomItem implements MblUniversalItem {
-
-    static SimpleDateFormat sDateFormat = new SimpleDateFormat("MMM dd");
-    static SimpleDateFormat sTimeFormat = new SimpleDateFormat("HH:mm");
 
     Room mRoom;
 
@@ -53,18 +48,18 @@ class RoomItem implements MblUniversalItem {
             latestMessageBodyText.setVisibility(View.VISIBLE);
             latestMessageTimeText.setVisibility(View.VISIBLE);
             latestMessageBodyText.setText(latestMessage.getBody());
-            latestMessageTimeText.setText(getTimeString(latestMessage.getTime()));
+            latestMessageTimeText.setText(Util.getTimeString(latestMessage.getTime()));
         } else {
             latestMessageBodyText.setVisibility(View.INVISIBLE);
             latestMessageTimeText.setVisibility(View.INVISIBLE);
         }
-    }
 
-    private String getTimeString(long time) {
-        if (DateUtils.isToday(time)) {
-            return sTimeFormat.format(new Date(time));
-        } else {
-            return sDateFormat.format(new Date(time));
-        }
+        // click
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TalkActivity.start(mRoom);
+            }
+        });
     }
 }

@@ -34,6 +34,7 @@ public class ChatUtil {
     private static Map<String, List<Message>> sRoomMessages = new HashMap<>();
     private static boolean sConnected;
     private static boolean sConnecting;
+    private static String sUserId;
 
     public static void initialize() {
         // init Chat SDK
@@ -117,11 +118,15 @@ public class ChatUtil {
     }
 
     public static String getUserId() {
-        return MblUtils.getPrefs().getString(PREF_USER_ID, null);
+        if (sUserId == null) {
+            sUserId = MblUtils.getPrefs().getString(PREF_USER_ID, null);
+        }
+        return sUserId;
     }
 
     public static void setUserId(String userId) {
         MblUtils.getPrefs().edit().putString(PREF_USER_ID, userId).commit();
+        sUserId = userId;
     }
 
     public static List<Room> getAllRooms() {
@@ -135,6 +140,25 @@ public class ChatUtil {
         } else {
             return null;
         }
+    }
+
+    public static void getRoomAllMessages(final String roomId, final GetManyMessagesCallback callback) {
+        ChatSdk.getInstance().getRoomMessages(roomId, 0, new GetManyMessagesCallback() {
+            @Override
+            public void onSuccess(List<Message> messages) {
+                sRoomMessages.put(roomId, new ArrayList<>(messages));
+                if (callback != null) {
+                    callback.onSuccess(messages);
+                }
+            }
+
+            @Override
+            public void onError(int err) {
+                if (callback != null) {
+                    callback.onError(err);
+                }
+            }
+        });
     }
 
     public static void connect() {
@@ -160,6 +184,10 @@ public class ChatUtil {
                 userIds.toArray(new String[userIds.size()]),
                 name,
                 callback);
+    }
+
+    public static void createMessage(String roomId, String body, IdCallback callback) {
+        ChatSdk.getInstance().createMessage(roomId, body, callback);
     }
 
     private static void login() {
