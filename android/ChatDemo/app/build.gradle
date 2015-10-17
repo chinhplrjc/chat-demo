@@ -6,15 +6,37 @@ android {
 
     defaultConfig {
         applicationId "datdo.co.jp.chatdemo"
-        minSdkVersion 10
+        minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+    }
+
+
     buildTypes {
+        debug {
+            debuggable true
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    productFlavors {
+        dev {
+            buildConfigField 'String', 'HTTP_SERVER', '"http://192.168.1.44:3000"'
+            buildConfigField 'String', 'WS_SERVER', '"ws://192.168.1.44:8080"'
+        }
+        prod {
+            buildConfigField 'String', 'HTTP_SERVER', '"http://52.88.39.166:3000"'
+            buildConfigField 'String', 'WS_SERVER', '"ws://52.88.39.166:8080"'
         }
     }
 }
