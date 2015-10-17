@@ -195,7 +195,7 @@ module ClientServer
   }
 =end
   def get_room_messages(ws, channels, user_id, subscriptions, json)
-    crit = Message.where(room_id: json['room_id'])
+    crit = Message.where(room_id: json['room_id']).order_by(:time.desc)
     if json['limit'] && json['limit'] > 0
       crit = crit.limit(json['limit'])
     end
