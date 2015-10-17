@@ -83,8 +83,8 @@ module ClientServer
 
     # push event to all users
     channels[:all].push({
-      to: json['users'],
-      event: 'on_join',
+      to: json['users'] | user_id,
+      event: 'on_new_room',
       room: room
     })
 
@@ -158,7 +158,7 @@ module ClientServer
     # push to other users
     chan = channels[json['room_id']]
     chan.push({
-      event: 'on_message',
+      event: 'on_new_message',
       message: message
     })
 

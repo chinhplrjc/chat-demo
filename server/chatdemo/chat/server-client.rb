@@ -3,16 +3,16 @@ module ServerClient
 =begin
   EVENT
   {
-    event: 'on_join',
+    event: 'on_new_room',
     room: room
   }
   PUSH
   {
-    'event': 'on_join',
+    'event': 'on_new_room',
     'room_id': 'room_id_1'
   }
 =end
-  def on_join(ws, channels, user_id, subscriptions, data)
+  def on_new_room(ws, channels, user_id, subscriptions, data)
 
     # suscribe to new channel
     room_id = data[:room].id.to_s
@@ -24,7 +24,7 @@ module ServerClient
 
     # push to client
     ws.send({
-      event: 'on_join',
+      event: 'on_new_room',
       room_id: room_id
     }.to_json)
   end
@@ -35,12 +35,12 @@ module ServerClient
 =begin
   EVENT
   {
-    event: 'on_message',
+    event: 'on_new_message',
     message: message
   }
   PUSH
   {
-    'event': 'on_message',
+    'event': 'on_new_message',
     'id': 'message_id_1',
     'body': 'Hello There!!!',
     'time': 1444986700,
@@ -48,9 +48,9 @@ module ServerClient
     'user_id': 'user_id_1'
   }
 =end
-  def on_message(ws, channels, user_id, subscriptions, data)
+  def on_new_message(ws, channels, user_id, subscriptions, data)
     ws.send({
-      event: 'on_message',
+      event: 'on_new_message',
       id: data[:message].id.to_s,
       body: data[:message].body,
       time: data[:message].time,
