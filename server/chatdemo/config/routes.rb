@@ -2,6 +2,7 @@ Rails.application.routes.draw do
 
   scope 'api' do
     post 'register' => 'api#register'
+    get 'get_all_users' => 'api#get_all_users'
   end
 
   # The priority is based upon order of creation: first created -> highest priority.

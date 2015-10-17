@@ -17,4 +17,15 @@ class ApiController < ActionController::Base
     # response
     render json: { err: 0 }
   end
+
+  def get_all_users
+    render json: {
+      err: 0,
+      users: User.all.to_a.map do |u|
+        {
+          user_id: u.user_id
+        }
+      end
+    }
+  end
 end
