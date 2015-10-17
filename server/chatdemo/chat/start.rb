@@ -45,6 +45,12 @@ EventMachine.run do
       end
 
       ws.onmessage do |msg|
+        # check if msg is heart-beat
+        if msg == 'h'
+          next
+        end
+
+        # call corresponding action method
         begin
           json = JSON.parse(msg)
           eval "#{json['action']}(ws, channels, user_id, subscriptions, json)"
@@ -55,7 +61,6 @@ EventMachine.run do
           puts "=" * 20
           ws.send({ err: ERR_BAD_REQUEST }.to_json)
         end
-        
       end
 
       ws.onclose do |event|
