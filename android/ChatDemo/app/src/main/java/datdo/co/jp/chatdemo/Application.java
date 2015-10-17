@@ -1,5 +1,6 @@
 package datdo.co.jp.chatdemo;
 
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.view.View;
 import android.widget.ListView;
@@ -47,6 +48,8 @@ public class Application extends MblBaseApplication {
                     if (lv.getSelector() != stateListDrawable) {
                         lv.setSelector(stateListDrawable);
                     }
+                    lv.setDivider(new ColorDrawable(0x88adadad));
+                    lv.setDividerHeight(1);
                 }
             }
         });

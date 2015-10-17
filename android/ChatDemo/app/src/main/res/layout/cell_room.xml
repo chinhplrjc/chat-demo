@@ -7,25 +7,45 @@
     android:background="#fff"
     android:padding="10dp">
 
-    <TextView
-        android:id="@+id/name_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:textColor="#000"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:text="{Room name....................................................................................}"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="10dp">
+        android:gravity="center_vertical">
 
         <TextView
-            android:id="@+id/last_message_text"
+            android:id="@+id/name_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textColor="#000"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:text="{Room name}"/>
+
+        <TextView
+            android:id="@+id/member_count_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:singleLine="true"
+            android:textColor="#f00"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:text="{3 users}"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/latest_message_body_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -33,7 +53,7 @@
             android:ellipsize="end"
             android:textColor="#000"
             android:textSize="12sp"
-            android:text="{Last message..............................................................................}"/>
+            android:text="{Last message}"/>
 
         <TextView
             android:id="@+id/latest_message_time_text"

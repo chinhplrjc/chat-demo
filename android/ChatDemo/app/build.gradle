@@ -31,8 +31,8 @@ android {
 
     productFlavors {
         dev {
-            buildConfigField 'String', 'HTTP_SERVER', '"http://192.168.1.44:3000"'
-            buildConfigField 'String', 'WS_SERVER', '"ws://192.168.1.44:8080"'
+            buildConfigField 'String', 'HTTP_SERVER', '"http://192.168.128.105:3000"'
+            buildConfigField 'String', 'WS_SERVER', '"ws://192.168.128.105:8080"'
         }
         prod {
             buildConfigField 'String', 'HTTP_SERVER', '"http://52.88.39.166:3000"'

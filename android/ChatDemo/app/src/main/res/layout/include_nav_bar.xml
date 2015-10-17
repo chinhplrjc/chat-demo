@@ -50,8 +50,5 @@
             android:textColor="#000"/>
     </FrameLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#ADADAD"/>
+    <include layout="@layout/include_horizontal_separator"/>
 </LinearLayout>

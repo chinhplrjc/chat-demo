@@ -76,6 +76,8 @@ public class LoginActivity extends BaseActivity {
                 int err = (Integer) args[0];
                 if (err == Error.ERR_INVALID_USER_ID) {
                     MblUtils.showAlert(R.string.error, R.string.err_invalid_user_id, null);
+                } else {
+                    MblUtils.showAlert(R.string.error, R.string.err_failed_try_later, null);
                 }
                 terminate();
             }

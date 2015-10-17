@@ -7,14 +7,13 @@ import android.widget.EditText;
 import android.widget.ScrollView;
 
 import com.datdo.mobilib.event.MblEventCenter;
-import com.datdo.mobilib.event.MblStrongEventListener;
 import com.datdo.mobilib.util.MblUtils;
 import com.datdo.mobilib.util.MblViewUtil;
 
-import datdo.co.jp.chatdemo.sdk.*;
+import datdo.co.jp.chatdemo.sdk.ChatSdk;
+import datdo.co.jp.chatdemo.sdk.Error;
 import datdo.co.jp.chatdemo.util.ChatUtil;
 import datdo.co.jp.chatdemo.util.Event;
-import datdo.co.jp.chatdemo.sdk.Error;
 
 /**
  * Created by dat on 2015/10/17.

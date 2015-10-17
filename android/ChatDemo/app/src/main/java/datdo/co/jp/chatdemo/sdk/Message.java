@@ -16,7 +16,7 @@ public class Message {
     static Message fromJSON(JSONObject json) {
         Message m = new Message();
         m.mId = json.optString("id");
-        m.mId = json.optString("body");
+        m.mBody = json.optString("body");
         m.mTime = json.optLong("time") * 1000;
         m.mRoomId = json.optString("room_id");
         m.mUserId = json.optString("user_id");

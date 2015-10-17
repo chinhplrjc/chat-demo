@@ -1,15 +1,21 @@
 <resources>
     <string name="app_name">ChatDemo</string>
     <string name="back">Back</string>
-    <string name="new_room">New Room</string>
+    <string name="create">Create</string>
     <string name="room_list">Room List</string>
     <string name="login">Login</string>
     <string name="your_user_id">Your User ID</string>
     <string name="or_create_your_own_user_id">or create your own User ID</string>
     <string name="your_desired_user_id">Your desired User ID</string>
     <string name="register">Register</string>
+    <string name="room_name_here">Room name here...</string>
+    <string name="create_room">Create Room</string>
+    <string name="xxx_members">%1$d members</string>
 
     <string name="error">Error</string>
     <string name="err_invalid_user_id">Invalid User ID</string>
     <string name="err_user_already_exist">User ID is already existing.</string>
+    <string name="err_please_input_room_name">Please input room name</string>
+    <string name="err_please_select_user">Please select user</string>
+    <string name="err_failed_try_later">Failed! Please try later.</string>
 </resources>

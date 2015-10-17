@@ -10,6 +10,7 @@ import com.datdo.mobilib.util.MblUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,8 +30,8 @@ public class ChatUtil {
     private static final String TAG = MblUtils.getTag(ChatUtil.class);
     private static final String PREF_USER_ID = "Chat.user_id";
 
-    private static List<Room> sRooms = Collections.synchronizedList(new ArrayList<Room>());
-    private static Map<String, List<Message>> sRoomMessages = new ConcurrentHashMap<>();
+    private static List<Room> sRooms = new ArrayList<>();
+    private static Map<String, List<Message>> sRoomMessages = new HashMap<>();
     private static boolean sConnected;
     private static boolean sConnecting;
 
@@ -59,13 +60,28 @@ public class ChatUtil {
                     }
 
                     @Override
-                    public void onJoin(String roomId) {
-                        MblEventCenter.postEvent(null, Event.CHAT_ON_JOIN, roomId);
+                    public void onNewRoom(String roomId) {
+                        ChatSdk.getInstance().getRoom(roomId, new GetRoomCallback() {
+                            @Override
+                            public void onSuccess(Room room) {
+                                sRooms.add(room);
+                                MblEventCenter.postEvent(null, Event.CHAT_ON_NEW_ROOM, room);
+                            }
+
+                            @Override
+                            public void onError(int err) {}
+                        });
                     }
 
                     @Override
-                    public void onMessage(Message message) {
-                        MblEventCenter.postEvent(null, Event.CHAT_ON_MESSAGE, message);
+                    public void onNewMessage(Message message) {
+                        List<Message> roomMessages = sRoomMessages.get(message.getRoomId());
+                        if (roomMessages == null) {
+                            roomMessages = new ArrayList<>();
+                            sRoomMessages.put(message.getRoomId(), roomMessages);
+                        }
+                        roomMessages.add(0, message);
+                        MblEventCenter.postEvent(null, Event.CHAT_ON_NEW_MESSAGE, message);
                     }
                 });
 
@@ -139,6 +155,13 @@ public class ChatUtil {
         ChatSdk.getInstance().disconnect();
     }
 
+    public static void createRoom(List<String> userIds, String name, final IdCallback callback) {
+        ChatSdk.getInstance().createRoom(
+                userIds.toArray(new String[userIds.size()]),
+                name,
+                callback);
+    }
+
     private static void login() {
         ChatSdk.getInstance().login(getUserId(), new LoginCallback() {
 
@@ -154,16 +177,18 @@ public class ChatUtil {
                     final Room r = rooms.get(i);
                     tasks[i] = new MblSerializer.Task() {
                         @Override
-                        public void run(Runnable finishCallback) {
+                        public void run(final Runnable finishCallback) {
                             ChatSdk.getInstance().getRoomMessages(r.getId(), 1, new GetManyMessagesCallback() {
                                 @Override
                                 public void onSuccess(List<Message> messages) {
                                     sRoomMessages.put(r.getId(), messages);
+                                    finishCallback.run();
                                 }
 
                                 @Override
                                 public void onError(int err) {
                                     Log.e(TAG, "Failed to get latest message for room: " + r.getId());
+                                    finishCallback.run();
                                 }
                             });
                         }
@@ -174,6 +199,7 @@ public class ChatUtil {
                     @Override
                     public void run(Runnable finishCallback) {
                         MblEventCenter.postEvent(null, Event.CHAT_LOGIN_SUCCESS);
+                        finishCallback.run();
                     }
                 });
 

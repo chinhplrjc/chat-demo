@@ -6,6 +6,6 @@ package datdo.co.jp.chatdemo.sdk;
 public interface Listener {
     void onConnect();
     void onDisconnect();
-    void onJoin(String roomId);
-    void onMessage(Message message);
+    void onNewRoom(String roomId);
+    void onNewMessage(Message message);
 }

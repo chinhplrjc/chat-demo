@@ -15,10 +15,9 @@ public class Room {
         Room r = new Room();
         r.mId = json.optString("id");
         r.mName = json.optString("name");
-        r.mUserIds = (String[]) Util.toArray(json.optJSONArray("users"));
+        r.mUserIds = Util.toStringArray(json.optJSONArray("users"));
         return r;
     }
-
 
     public String getId() {
         return mId;

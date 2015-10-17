@@ -14,6 +14,7 @@ import com.datdo.mobilib.api.MblResponse;
 
 import junit.framework.Assert;
 
+import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONArray;
@@ -68,6 +69,17 @@ public class ChatSdk {
 
         // listener
         mListener = listener;
+
+        // set hear-beat every 5 seconds to keep connection alive
+        Util.repeatDelayed(sMainThreadHandler, 5000, new Runnable() {
+            @Override
+            public void run() {
+                if (mWebSocketClient != null && mWebSocketClient.getReadyState() == WebSocket.READYSTATE.OPEN) {
+                    Log.d(TAG, "Send heart-beat");
+                    mWebSocketClient.send("h");
+                }
+            }
+        });
     }
 
     private class _WebSocketClient extends WebSocketClient {
@@ -95,11 +107,11 @@ public class ChatSdk {
                             onCallback(tag, json);
                         } else {
                             String event = json.getString("event");
-                            if (TextUtils.equals(event, "on_join")) {
-                                ChatSdk.this.onJoin(json);
+                            if (TextUtils.equals(event, "on_new_room")) {
+                                ChatSdk.this.onNewRoom(json);
                             }
-                            else if (TextUtils.equals(event, "on_message")) {
-                                ChatSdk.this.onMessage(json);
+                            else if (TextUtils.equals(event, "on_new_message")) {
+                                ChatSdk.this.onNewMessage(json);
                             }
                         }
                     } catch (Exception e) {
@@ -174,7 +186,7 @@ public class ChatSdk {
         }
     }
 
-    private void onJoin(JSONObject json) throws JSONException {
+    private void onNewRoom(JSONObject json) throws JSONException {
         if (mListener == null) {
             return;
         }
@@ -182,12 +194,12 @@ public class ChatSdk {
         sMainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
-                mListener.onJoin(roomId);
+                mListener.onNewRoom(roomId);
             }
         });
     }
 
-    private void onMessage(JSONObject json) throws JSONException {
+    private void onNewMessage(JSONObject json) throws JSONException {
         if (mListener == null) {
             return;
         }
@@ -195,7 +207,7 @@ public class ChatSdk {
         sMainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
-                mListener.onMessage(message);
+                mListener.onNewMessage(message);
             }
         });
     }
@@ -205,6 +217,14 @@ public class ChatSdk {
                 .setMethod(Method.POST)
                 .setUrl(mHttpServer + "/api/register")
                 .setParams("user_id", userId)
+                .setCallbackHandler(mHandler)
+                .setCallback(getApiCallback(callback)));
+    }
+
+    public void getAllUsers(GetAllUsersCallback callback) {
+        MblApi.run(new MblRequest()
+                .setMethod(Method.GET)
+                .setUrl(mHttpServer + "/api/get_all_users")
                 .setCallbackHandler(mHandler)
                 .setCallback(getApiCallback(callback)));
     }
@@ -225,8 +245,8 @@ public class ChatSdk {
         send("login", callback, "user_id", userId);
     }
 
-    public void createRoom(String[] userIds, IdCallback callback) {
-        send("create_room", callback, "users", userIds);
+    public void createRoom(String[] userIds, String name, IdCallback callback) {
+        send("create_room", callback, "users", userIds, "name", name);
     }
 
     public void getRoom(String roomId, GetRoomCallback callback) {
@@ -323,6 +343,26 @@ public class ChatSdk {
                 @Override
                 public void run() {
                     onSuccess(messages);
+                }
+            });
+        }
+    }
+
+    public static abstract class GetAllUsersCallback extends Callback {
+
+        public abstract void onSuccess(List<String> userIds);
+
+        @Override
+        protected void invoke(JSONObject json) throws Exception {
+            JSONArray ja = json.getJSONArray("users");
+            final List<String> userIds = new ArrayList<>();
+            for (int i = 0; i < ja.length(); i++) {
+                userIds.add(ja.getJSONObject(i).getString("user_id"));
+            }
+            sMainThreadHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    onSuccess(userIds);
                 }
             });
         }
