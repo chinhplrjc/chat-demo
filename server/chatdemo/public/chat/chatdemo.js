@@ -112,19 +112,23 @@
                         SubPub.pub(EVENT_CHAT_LOGIN_SUCCESS);
                     }
                 };
-                _.each($rooms, function(r) {
-                    ChatSdk.getRoomMessages(r.id, 1, {
-                        onSuccess: function(messages) {
-                            $roomMessages[r.id] = messages;
-                            c++;
-                            check();
-                        },
-                        onError: function(err) {
-                            c++;
-                            check();
-                        }
-                    })
-                });
+                if ($rooms.length > 0) {
+                    _.each($rooms, function(r) {
+                        ChatSdk.getRoomMessages(r.id, 1, {
+                            onSuccess: function(messages) {
+                                $roomMessages[r.id] = messages;
+                                c++;
+                                check();
+                            },
+                            onError: function(err) {
+                                c++;
+                                check();
+                            }
+                        })
+                    });
+                } else {
+                    check();
+                }
             },
             onError: function(err) {
                 if (err == ChatSdk.ERR_INVALID_USER_ID) {
