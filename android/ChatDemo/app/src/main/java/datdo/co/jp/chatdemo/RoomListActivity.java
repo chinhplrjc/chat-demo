@@ -73,7 +73,7 @@ public class RoomListActivity extends BaseActivity {
             @Override
             public int compare(Room r1, Room r2) {
                 Message lm1 = ChatUtil.getRoomLatestMessage(r1.getId());
-                Message lm2 = ChatUtil.getRoomLatestMessage(r1.getId());
+                Message lm2 = ChatUtil.getRoomLatestMessage(r2.getId());
                 if (lm1 == null && lm2 == null) {
                     return 0;
                 }
