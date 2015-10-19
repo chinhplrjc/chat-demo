@@ -159,7 +159,7 @@ public class ChatSdk {
     }
 
     private void onCallback(int tag, JSONObject json) throws Exception {
-        final Callback callback = mCallbacks.get(tag);
+        final Callback callback = mCallbacks.remove(tag);
         if (callback == null) {
             return;
         }
