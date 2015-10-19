@@ -13,6 +13,14 @@
         arr.push(cb);
     };
 
+    SubPub.unsub = function(e, cb) {
+        var arr = subcribers[e];
+        if (!arr) {
+            return;
+        }
+        subcribers[e] = _.without(arr, cb);
+    }
+
     SubPub.pub = function(e, data) {
         var arr = subcribers[e];
         if (!arr) {

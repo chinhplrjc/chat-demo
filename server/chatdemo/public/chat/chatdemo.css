@@ -21,6 +21,18 @@ body {
     cursor: pointer;
 }
 
+.user {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.user img {
+    width: 20px;
+    height: 20px;
+    float: right;
+}
+
 .bs-callout {
     padding: 10px;
     border: 1px solid #eee;

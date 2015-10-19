@@ -94,7 +94,43 @@
                 alert("Failed! Please try later");
             }
         });
-    }
+    };
+
+    ChatDemo.onUserClick = function(userId) {
+        $("#USER_LIST .user img[data-userid='" + userId + "']").toggle();
+    };
+
+    ChatDemo.onCreateRoomButtonClick = function() {
+        var selectedUserIds = [];
+        $("#USER_LIST .user img:visible").each(function(index, obj) {
+            selectedUserIds.push($(obj).data("userid"));
+        });
+        if (selectedUserIds.length == 0) {
+            return;
+        }
+        var name = prompt("Please input room name", "");
+        if (_.isEmpty(name)) {
+            return;
+        }
+        ChatSdk.createRoom(selectedUserIds, name, {
+            onSuccess: function(id) {
+                // automatically jump to new room when it is created
+                SubPub.sub(EVENT_CHAT_ON_NEW_ROOM, function(r) {
+                    if (id != r.id) {
+                        return;
+                    }
+                    ChatDemo.onRoomClick(id);
+                    SubPub.unsub(this, EVENT_CHAT_ON_NEW_ROOM);
+                });
+
+                // deselect all selected users
+                $("#USER_LIST .user img:visible").hide();
+            },
+            onError: function(err) {
+                alert("Failed! Please try later");
+            }
+        })
+    };
 
     function getRoomLatestMessage(roomId) {
         var messages = $roomMessages[roomId];
@@ -112,6 +148,7 @@
                 var c = 0;
                 var check = function() {
                     if (c == $rooms.length) {
+                        $userId = userId;
                         SubPub.pub(EVENT_CHAT_LOGIN_SUCCESS);
                     }
                 };
@@ -177,6 +214,34 @@
         });
     }
 
+    function displayUsers() {
+        ChatSdk.getAllUsers({
+            onSuccess: function(userIds) {
+                userIds = _.without(userIds, $userId);
+                var container = $("#USER_LIST .panel-body");
+                container.empty();
+                _.each(userIds, function(id) {
+                    container.append(
+                        '<div class="user" onclick="ChatDemo.onUserClick(\'' + id + '\');">' +
+                            '<table style="width:100%">' +
+                                '<tr>' +
+                                    '<td>' +
+                                        '<h5>' + id + '</h5>' +
+                                    '</td>' +
+                                    '<td>' +
+                                        '<img src="check.png" data-userid="' + id + '"/>' +
+                                    '</td>' +
+                                '</tr>' +
+                            '</table>' +
+                        '</div>'
+                    );
+                });
+                container.find("img").hide();
+            },
+            onError: function(err) {}
+        });
+    }
+
     $(function() {
         
         // display login screen
@@ -202,6 +267,10 @@
             var talkLayout = $("#TALK_LAYOUT");
             var talkLayoutMessageInput = $("#MESSAGE_INPUT");
             $("#TALK_LAYOUT #MESSAGE_LIST").height(talkLayout.height() - talkLayoutMessageInput.height() - 10);
+
+            var userListPanel = $("#USER_LIST .panel");
+            var userListPanelHeading = $("#USER_LIST .panel-heading");
+            $("#USER_LIST .panel-body").height(userListPanel.height() - userListPanelHeading.height() - 20);
         });
         $(window).trigger("resize");
 
@@ -215,6 +284,9 @@
 
             // display rooms
             displayRooms();
+
+            // load and display users
+            displayUsers();
         });
         SubPub.sub(EVENT_CHAT_ON_NEW_ROOM, function(room) {
             displayRooms();
