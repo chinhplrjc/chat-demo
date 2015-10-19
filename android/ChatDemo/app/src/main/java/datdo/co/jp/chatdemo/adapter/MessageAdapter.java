@@ -44,6 +44,7 @@ public class MessageAdapter extends MblUniversalAdapter {
                 } else {
                     getData().add(new MessageLeftItem(m));
                 }
+                notifyDataSetChanged();
             }
         });
     }
