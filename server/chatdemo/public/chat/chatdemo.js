@@ -5,6 +5,7 @@
 
     EVENT_CHAT_LOGIN_SUCCESS    = 1;
     EVENT_CHAT_ON_NEW_ROOM      = 2;
+    EVENT_CHAT_ON_NEW_MESSAGE   = 3;
 
     var $rooms = [];
     var $roomMessages = {};
@@ -16,9 +17,14 @@
     ChatSdk.initialize("http://" + locationPath + ":3000", "ws://" + locationPath + ":8080", {
         onConnect: function() {},
         onDisconnect: function() {},
-
         onNewRoom: function(roomId) {
-
+            ChatSdk.getRoom(roomId, {
+                onSuccess: function(r) {
+                    $rooms.push(r);
+                    SubPub.pub(EVENT_CHAT_ON_NEW_ROOM, r);
+                },
+                onError: function(err) {}
+            });
         },
         onNewMessage: function(m) {
             var messages = $roomMessages[m.room_id];
@@ -27,10 +33,7 @@
                 $roomMessages[m.room_id] = messages;
             }
             messages.splice(0, 0, m);
-            if (m.room_id == $currentRoomId) {
-                displayMessages();
-            }
-            displayRooms();
+            SubPub.pub(EVENT_CHAT_ON_NEW_MESSAGE, m);
         }
     });
 
@@ -124,7 +127,7 @@
                                 c++;
                                 check();
                             }
-                        })
+                        });
                     });
                 } else {
                     check();
@@ -211,6 +214,15 @@
             $(window).trigger("resize");
 
             // display rooms
+            displayRooms();
+        });
+        SubPub.sub(EVENT_CHAT_ON_NEW_ROOM, function(room) {
+            displayRooms();
+        });
+        SubPub.sub(EVENT_CHAT_ON_NEW_MESSAGE, function(m) {
+            if (m.room_id == $currentRoomId) {
+                displayMessages();
+            }
             displayRooms();
         });
     });
